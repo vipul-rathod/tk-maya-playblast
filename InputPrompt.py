@@ -15,9 +15,6 @@ import maya.mel as mel
 from functools import partial
 from tank import TankError
 import sgtk
-if 'T:/software/bubblebathbay/custom' not in sys.path:
-    sys.path.append('T:/software/bubblebathbay/custom')
-import maya_genericSettings as settings
 
 class InputPrompt(QtGui.QWidget):
     """

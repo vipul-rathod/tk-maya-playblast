@@ -15,9 +15,7 @@ import maya.mel as mel
 from functools import partial
 from tank import TankError
 import sgtk
-if 'T:/software/bubblebathbay/custom' not in sys.path:
-    sys.path.append('T:/software/bubblebathbay/custom')
-import maya_genericSettings as settings
+import goodstuff as settings
 from debug import debug
  
 class UploaderThread(QtCore.QThread):

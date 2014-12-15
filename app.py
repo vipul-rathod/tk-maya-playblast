@@ -15,6 +15,9 @@ from tank.platform import Application
 import maya.cmds as cmds
 import maya.mel as mel
 from functools import partial
+from UploaderThread import UploaderThread
+from InputPrompt import InputPrompt
+from debug import debug
 ## Now get the custom tools
 # if 'T:/software/DoubleBarrel/' not in sys.path:
 #     sys.path.append('T:/software/DoubleBarrel/')
@@ -28,10 +31,7 @@ if 'T:/software/bubblebathbay/custom' not in sys.path:
 if 'T:/software/bubblebathbay/install/apps/tk-submit-mayaplayblast' not in sys.path:
     sys.path.append('T:/software/bubblebathbay/install/apps/tk-submit-mayaplayblast')
 
-from UploaderThread import UploaderThread
-import maya_genericSettings as settings
-from InputPrompt import InputPrompt
-from debug import debug
+import goodstuff as settings
 # from doubleBarrel import DoubleBarrel
 # import doubleBarrelWrapper as doubleBarrelWrapper
 # #reload(doubleBarrelWrapper)
