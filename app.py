@@ -18,24 +18,7 @@ from functools import partial
 from UploaderThread import UploaderThread
 from InputPrompt import InputPrompt
 from debug import debug
-## Now get the custom tools
-# if 'T:/software/DoubleBarrel/' not in sys.path:
-#     sys.path.append('T:/software/DoubleBarrel/')
-#     
-# if 'T:/software/python-api/' not in sys.path:
-#     sys.path.append('T:/software/python-api/')
-
-if 'T:/software/bubblebathbay/custom' not in sys.path:
-    sys.path.append('T:/software/bubblebathbay/custom')
-
-if 'T:/software/bubblebathbay/install/apps/tk-submit-mayaplayblast' not in sys.path:
-    sys.path.append('T:/software/bubblebathbay/install/apps/tk-submit-mayaplayblast')
-
 import goodstuff as settings
-# from doubleBarrel import DoubleBarrel
-# import doubleBarrelWrapper as doubleBarrelWrapper
-# #reload(doubleBarrelWrapper)
-# #reload(settings)
 
 
 class PlayBlastGenerator(Application):
@@ -63,12 +46,8 @@ class MainUI(QtGui.QWidget):
         NOTE: This currenlty playblasts directly into the publish folder.. it'd be great to avoid this and do the move of the file on register...
         """
         QtGui.QWidget.__init__(self)
-#         import time
-#         start = time.time()
 
         self.app = app
-        #self.dbWrap = DoubleBarrel
-        #self.sg = doubleBarrelWrapper._getShotgunObject(self.dbWrap, self.app)
         debug(self.app, method = 'Main_UI', message = 'INIT PlayBlastGenerator UI', verbose = False)
 
         ## Tell the artist to be patient... eg not genY
