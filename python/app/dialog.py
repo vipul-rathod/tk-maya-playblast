@@ -28,7 +28,7 @@ def show_dialog(app_instance):
     
     # we pass the dialog class to this method and leave the actual construction
     # to be carried out by toolkit.
-    app_instance.engine.show_dialog("Starter Template App...", app_instance, AppDialog)
+    app_instance.engine.show_dialog("Playblast v1.0", app_instance, AppDialog)
     
 
 
