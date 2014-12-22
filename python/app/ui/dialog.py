@@ -12,10 +12,17 @@ import maya.cmds as cmds
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(431, 392)
+        Dialog.resize(150, 90)
+        
+        self.mainLayout = QtGui.QVBoxLayout(Dialog)
         self.horizontalLayout = QtGui.QHBoxLayout(Dialog)
+        self.layout_01 = QtGui.QHBoxLayout(Dialog)
+
+        self.mainLayout.addLayout(self.horizontalLayout)
+        self.mainLayout.addLayout(self.layout_01)
+
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.playblast_now = QtGui.QPushButton("Playblast Time")
+        self.playblast_now = QtGui.QPushButton("Playblast")
         self.playblast_now.released.connect(self.happybirthday)
         self.logo_example = QtGui.QLabel(Dialog)
         self.logo_example.setText("")
@@ -31,7 +38,7 @@ class Ui_Dialog(object):
         self.context.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.context.setObjectName("context")
         self.horizontalLayout.addWidget(self.context)
-        self.horizontalLayout.addWidget(self.playblast_now)
+        self.layout_01.addWidget(self.playblast_now)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
