@@ -1,3 +1,3 @@
 tk-maya-playblast
 =================
-i have no idea what am i doing! LOL...
+trying to run PyQt UI Manualy on Shotgun - it's just a test
