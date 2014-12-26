@@ -11,7 +11,7 @@
 
 from sgtk.platform import Application
 
-class StgkStarterApp(Application):
+class Stgkplayblast(Application):
     """
     The app entry point. This class is responsible for intializing and tearing down
     the application, handle menu registration etc.
@@ -21,6 +21,7 @@ class StgkStarterApp(Application):
         """
         Called as the application is being initialized
         """
+        # print self.get_setting("very_field")
         
         # first, we use the special import_module command to access the app module
         # that resides inside the python folder in the app. This is where the actual UI

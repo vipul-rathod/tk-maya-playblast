@@ -8,21 +8,56 @@
 
 from tank.platform.qt import QtCore, QtGui
 import maya.cmds as cmds
+import sgtk
+import tank
+# import tank.templatekey
+# from tank.platform import Application
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(150, 90)
-        
+        Dialog.resize(700, 200)
+
+        self._app = sgtk.platform.current_bundle()
+        tank_Path = self._app.get_setting("tank_address_field")
+        shot_Name = self._app.context.entity["name"]
+        tk = sgtk.sgtk_from_path(tank_Path)
+        sequence_Name = tk.shotgun.find_one("Shot", [['code', 'is', shot_Name]], fields=['sg_sequence'])['sg_sequence']['name']
         self.mainLayout = QtGui.QVBoxLayout(Dialog)
         self.horizontalLayout = QtGui.QHBoxLayout(Dialog)
         self.layout_01 = QtGui.QHBoxLayout(Dialog)
+        self.layout_01_01 = QtGui.QVBoxLayout(Dialog)
+        self.layout_01_02 = QtGui.QVBoxLayout(Dialog)
+        self.layout_02 = QtGui.QHBoxLayout(Dialog)
+        self.layout_03 = QtGui.QHBoxLayout(Dialog)
 
         self.mainLayout.addLayout(self.horizontalLayout)
         self.mainLayout.addLayout(self.layout_01)
+        self.layout_01.addLayout(self.layout_01_01)
+        self.layout_01.addLayout(self.layout_01_02)
+        self.mainLayout.addLayout(self.layout_02)
+        self.mainLayout.addLayout(self.layout_03)
 
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.playblast_now = QtGui.QPushButton("Playblast")
+        self.outputLine = QtGui.QTextEdit()
+        self.addressText = QtGui.QLabel("Output:")
+        self.outputLine.setText('M:/defaultmultirootproject/[SEQUENCE]/[SHOT]/Reviews/[STEP]/work/R[VERSION]/[NAME].v[VERSION].mov')
+        self.outputLine.setEnabled(False)
+        self.outputLine.setMaximumSize(5000, 25)
+        self.shot_Text = QtGui.QLabel("Shot:")
+        self.shot_Field = QtGui.QTextEdit()
+        self.shot_Field.setText(shot_Name)
+        self.shot_Field.setMaximumHeight(25)
+        self.sequence_Text = QtGui.QLabel("Sequence:")
+        self.sequence_Field = QtGui.QTextEdit()
+        self.sequence_Field.setText(sequence_Name)
+        self.sequence_Field.setMaximumHeight(25)
+        self.version_Text = QtGui.QLabel("Version:")
+        self.version_Field = QtGui.QTextEdit()
+        self.version_Field.setText("001")
+        # self.version_Field.setValidator(QtGui.QDoubleValidator())
+        self.version_Field.setMaximumHeight(25)
         self.playblast_now.released.connect(self.happybirthday)
         self.logo_example = QtGui.QLabel(Dialog)
         self.logo_example.setText("")
@@ -38,7 +73,15 @@ class Ui_Dialog(object):
         self.context.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.context.setObjectName("context")
         self.horizontalLayout.addWidget(self.context)
-        self.layout_01.addWidget(self.playblast_now)
+        self.layout_02.addWidget(self.addressText)
+        self.layout_02.addWidget(self.outputLine)
+        self.layout_03.addWidget(self.playblast_now)
+        self.layout_01_01.addWidget(self.sequence_Text)
+        self.layout_01_01.addWidget(self.shot_Text)
+        self.layout_01_01.addWidget(self.version_Text)
+        self.layout_01_02.addWidget(self.sequence_Field)
+        self.layout_01_02.addWidget(self.shot_Field)
+        self.layout_01_02.addWidget(self.version_Field)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -48,8 +91,21 @@ class Ui_Dialog(object):
         self.context.setText(QtGui.QApplication.translate("Dialog", "Your Current Context: ", None, QtGui.QApplication.UnicodeUTF8))
     
     def happybirthday(self):
-        print "Happy Birthday MAN!!!"
-        cmds.playblast(format="qt", filename="C:/Temp/render.mov", forceOverwrite=True, sequenceTime=0, clearCache=1, viewer=1, showOrnaments=1, fp=4, percent=100, compression="H.264", quality=100, widthHeight=(1280,720))
+        print "Playblast Starting..."
+        # cmds.playblast(format="qt", filename="C:/Temp/render.mov", forceOverwrite=True, sequenceTime=0, clearCache=1, viewer=1, showOrnaments=1, fp=4, percent=100, compression="Photo - JPEG", quality=100, widthHeight=(1280,720))
+        #outputPAth = self.get_template("movie_path_template")
+        
+
+        # self._app = sgtk.platform.current_bundle()
+        # output_Tempelate = self._app.get_template("export_movie_template")
+        # shot_Name = self._app.context.entity["name"]
+        # step_Name = self._app.context.step["name"]
+        # tank_Path = self._app.get_setting("tank_address_field")
+        # tk = sgtk.sgtk_from_path(tank_Path)
+        # sequence_Name = tk.shotgun.find_one("Shot", [['code', 'is', shot_Name]], fields=['sg_sequence'])['sg_sequence']['name']
+        
+        
 
 
+        # self._work_template = self._app.get_template("movie_path_template")
 from . import resources_rc
