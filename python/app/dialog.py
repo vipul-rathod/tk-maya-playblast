@@ -1,12 +1,3 @@
-# Copyright (c) 2013 Shotgun Software Inc.
-# 
-# CONFIDENTIAL AND PROPRIETARY
-# 
-# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit 
-# Source Code License included in this distribution package. See LICENSE.
-# By accessing, using, copying or modifying this work you indicate your 
-# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights 
-# not expressly granted therein are reserved by Shotgun Software Inc.
 
 import sgtk
 import os
@@ -28,7 +19,7 @@ def show_dialog(app_instance):
     
     # we pass the dialog class to this method and leave the actual construction
     # to be carried out by toolkit.
-    app_instance.engine.show_dialog("Playblast v1.0", app_instance, AppDialog)
+    app_instance.engine.show_dialog("Playblast v3.0.0", app_instance, AppDialog)
     
 
 
@@ -58,6 +49,6 @@ class AppDialog(QtGui.QWidget):
         # - A tk API instance, via self._app.tk 
         
         # lastly, set up our very basic UI
-        self.ui.context.setText("Current Context: %s" % self._app.context)
+        self.ui.context.setText("Current Shot: %s" % self._app.context)
         
         

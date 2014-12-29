@@ -1,3 +1,3 @@
 tk-maya-playblast
 =================
-trying to run PyQt UI Manualy on Shotgun - it's just a test
+This tool is meant to do the playblast, save the file in the directory and submit it to shotgun.
