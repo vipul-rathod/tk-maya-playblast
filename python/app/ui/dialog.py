@@ -11,20 +11,16 @@ import maya.cmds as cmds
 import sgtk
 import tank
 import os
+from shutil import move
 # import tank.templatekey
 # from tank.platform import Application
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
+        self._Default_TextField()
+
         Dialog.setObjectName("Dialog")
         Dialog.resize(700, 200)
-
-        self._app = sgtk.platform.current_bundle()
-        tank_Path = self._app.get_setting("tank_address_field")
-        shot_Name = self._app.context.entity["name"]
-        tk = sgtk.sgtk_from_path(tank_Path)
-        sequence_Name = tk.shotgun.find_one("Shot", [['code', 'is', shot_Name]], fields=['sg_sequence'])['sg_sequence']['name']
-        self.stepName = self._app.context.step["name"]
 
         self.mainLayout = QtGui.QVBoxLayout(Dialog)
         self.horizontalLayout = QtGui.QHBoxLayout(Dialog)
@@ -45,17 +41,17 @@ class Ui_Dialog(object):
         self.playblast_now = QtGui.QPushButton("Playblast")
         self.outputLine = QtGui.QTextEdit()
         self.addressText = QtGui.QLabel("Output:")
-        self.outputLine.setText('M:/defaultmultirootproject/[SEQUENCE]/[SHOT]/Reviews/%s/work/R[VERSION]/[NAME].v[VERSION].mov'%self.stepName )
+        self.outputLine.setText('Path_Name')
         self.outputLine.setEnabled(False)
         self.outputLine.setMaximumSize(5000, 25)
         self.shot_Text = QtGui.QLabel("Shot:")
         self.shot_Field = QtGui.QTextEdit()
-        self.shot_Field.setText(shot_Name)
+        self.shot_Field.setText(self.shot_Name)
         self.shot_Field.setMaximumHeight(25)
         self.shot_Field.textChanged.connect(self.textChanging)
         self.sequence_Text = QtGui.QLabel("Sequence:")
         self.sequence_Field = QtGui.QTextEdit()
-        self.sequence_Field.setText(sequence_Name)
+        self.sequence_Field.setText(self.sequence_Name)
         self.sequence_Field.setMaximumHeight(25)
         self.sequence_Field.textChanged.connect(self.textChanging)
         self.version_Text = QtGui.QLabel("Version:")
@@ -64,7 +60,8 @@ class Ui_Dialog(object):
         # self.version_Field.setValidator(QtGui.QDoubleValidator())
         self.version_Field.setMaximumHeight(25)
         self.version_Field.textChanged.connect(self.textChanging)
-        self.playblast_now.released.connect(self.happybirthday)
+        self.playblast_now.released.connect(self.do_Playblast)
+        
         self.logo_example = QtGui.QLabel(Dialog)
         self.logo_example.setText("")
         self.logo_example.setPixmap(QtGui.QPixmap(":/res/sg_logo.png"))
@@ -78,6 +75,7 @@ class Ui_Dialog(object):
         self.context.setSizePolicy(sizePolicy)
         self.context.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.context.setObjectName("context")
+        
         self.horizontalLayout.addWidget(self.context)
         self.layout_02.addWidget(self.addressText)
         self.layout_02.addWidget(self.outputLine)
@@ -92,46 +90,88 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.textChanging()
+
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "The Current Sgtk Environment", None, QtGui.QApplication.UnicodeUTF8))
         self.context.setText(QtGui.QApplication.translate("Dialog", "Your Current Context: ", None, QtGui.QApplication.UnicodeUTF8))
     
-    def textChanging(self):
+    def _Default_TextField(self):
+        """
+        Getting the default setting form shorgun and set them into text field.
+        """
         self._app = sgtk.platform.current_bundle()
+        self.tank_Path = self._app.get_setting("tank_address_field")
+        self.shot_Name = self._app.context.entity["name"]
+        self.tk = sgtk.sgtk_from_path(self.tank_Path)
+        self.sequence_Name = self.tk.shotgun.find_one("Shot", [['code', 'is', self.shot_Name]], fields=['sg_sequence'])['sg_sequence']['name']
         self.stepName = self._app.context.step["name"]
+
+
+    def textChanging(self):
+        """
+        Updating the Path whenever textfield has been changed.
+        """
         baseTemplate = 'M:/defaultmultirootproject/[SEQUENCE]/[SHOT]/Reviews/[STEP]/work/R[VERSION]/[NAME].v[VERSION].mov'
         
         self.shotName = self.shot_Field.toPlainText()
         self.sequenceName = self.sequence_Field.toPlainText()
         self.versionNum = self.version_Field.toPlainText()
 
-        finalOutput = 'M:/defaultmultirootproject/%s/%s/Reviews/%s/work/R%s/%s.v%s.mov'%(self.sequenceName,self.shotName,self.stepName,self.versionNum,self.shotName,self.versionNum)
-        self.outputLine.setText(finalOutput)
+        self.finalOutput = 'M:/defaultmultirootproject/%s/%s/Reviews/%s/work/R%s/%s.v%s.mov'%(self.sequenceName,self.shotName,self.stepName,self.versionNum,self.shotName,self.versionNum)
+        self.outputLine.setText(self.finalOutput)
 
-
-    def happybirthday(self):
+    def do_Playblast(self):
+        """
+        getting the final Filed, Playblasting and publish it to shotgun
+        """
         print "Playblast Starting..."
-        #outputPAth = self.get_template("movie_path_template")
-        self.textChanging()
-        finalOutput = 'M:/defaultmultirootproject/%s/%s/Reviews/%s/work/R%s/'%(self.sequenceName,self.shotName,self.stepName,self.versionNum)
-        if os.path.exists(finalOutput):
-            print "Yeay"
-        else:
-            os.makedirs(finalOutput)
-        cmds.playblast(format="qt", filename=('%s%s.v%s.mov'%(finalOutput,self.shotName,self.versionNum)).replace('/','\\'), forceOverwrite=True, sequenceTime=0, clearCache=1, viewer=1, showOrnaments=1, fp=4, percent=100, compression="Photo - JPEG", quality=100, widthHeight=(1280,720))
 
-        # if "PNGMOV" not in os.listdir(baseDir):
-        #             os.makedirs(destDir)
-        # self._app = sgtk.platform.current_bundle()
-        # output_Tempelate = self._app.get_template("export_movie_template")
-        # shot_Name = self._app.context.entity["name"]
-        # stepName = self._app.context.step["name"]
-        # tank_Path = self._app.get_setting("tank_address_field")
-        # tk = sgtk.sgtk_from_path(tank_Path)
-        # sequence_Name = tk.shotgun.find_one("Shot", [['code', 'is', shot_Name]], fields=['sg_sequence'])['sg_sequence']['name']
+        #check the path of exist:
+        base_Path = '//192.168.5.253/Lsa-projects-sg/m'
+        self.output = (self.finalOutput.replace('M:',base_Path)).replace('%s.v%s.mov'%(self.shotName,self.versionNum),'')
+        if not os.path.exists(self.output):
+            print "Creating Server Folder..."
+            os.makedirs(self.output)
 
+        #set the File Name
+        self.output = self.output + '%s.v%s.mov'%(self.shotName,self.versionNum)
+        
+        #local path
+        self.localOutput = 'C:/Temp/%s.v%s.mov'%(self.shotName,self.versionNum)
+        if not os.path.exists('C:/Temp'):
+            print "Creating local Folder..."
+            os.makedirs('C:/Temp/') 
 
+        #Do the playblast
+        cmds.playblast(format="qt", filename=self.localOutput, forceOverwrite=True, sequenceTime=0, clearCache=1, viewer=0, showOrnaments=1, fp=4, percent=100, compression="Photo - JPEG", quality=100, widthHeight=(1280,720))
 
+        #Move the video to the Server directory 
+        move(self.localOutput,self.output)
 
-        # self._work_template = self._app.get_template("movie_path_template")
+        #register the published file to the shotgun
+        self._publish_playblast(self.tk, 
+                                self._app.context,
+                                self.finalOutput.replace('/','\\'),
+                                self.shotName,
+                                int(self.versionNum)
+            )
+
+    def _publish_playblast(self, tk_Path, context, publish_path, name, version):
+        """
+        Helper method to register publish using the 
+        specified publish info.
+        """
+        # construct args:
+        args = {
+            "tk": tk_Path,
+            "context": context,
+            "path": publish_path,
+            "name": name,
+            "version_number": version,
+        }
+        
+        # registering publish
+        sg_data = tank.util.register_publish(**args)
+
 from . import resources_rc
