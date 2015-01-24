@@ -7,11 +7,6 @@ configuration:
         optional_fields: "*"
         description: "Template defining the output location of the work in progress movie file on the the file system."
 
-    tank_address_field:
-        type: str
-        default_value: "L:/defaultmultirootproject/tank_sandbox"
-        description: "Getting the defult Tank address"
-
 
 # this app works on Maya engines
 # any host application specific commands
