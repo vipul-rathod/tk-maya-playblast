@@ -8,17 +8,12 @@
 
 from tank.platform.qt import QtCore, QtGui
 import maya.cmds as cmds
-import sgtk
 import tank
 import os, time
 from shutil import move
-# import tank.templatekey
-# from tank.platform import Application
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
-#         self._Default_TextField()
-
         self._app = tank.platform.current_bundle()
         self.tk = self._app.engine._TankBundle__tk
         self.ctx = self._app.engine._TankBundle__context
@@ -28,6 +23,7 @@ class Ui_Dialog(object):
         self.step_name = self.ctx.step["name"]
         self.name = self.shot_name.replace("_", "")
 
+        self.main01()
         Dialog.setObjectName("Dialog")
         Dialog.resize(700, 200)
 
@@ -64,30 +60,25 @@ class Ui_Dialog(object):
         self.project_Field.setMaximumSize(5000, 25)
         self.address_Text = QtGui.QLabel("Output:")
         self.output_Field = QtGui.QTextEdit()
-        self.output_Field.setText("Path_Name")
+        self.output_Field.setText(self.path)
         self.output_Field.setEnabled(False)
         self.output_Field.setMaximumSize(5000, 25)
         self.shot_Text = QtGui.QLabel("Shot:")
         self.shot_Field = QtGui.QTextEdit()
         self.shot_Field.setText(self.shot_name)
         self.shot_Field.setMaximumHeight(25)
-#         self.shot_Field.textChanged.connect(self.textChanging)
         self.sequence_Text = QtGui.QLabel("Sequence:")
         self.sequence_Field = QtGui.QTextEdit()
         self.sequence_Field.setText(self.sequence_name)
         self.sequence_Field.setMaximumHeight(25)
-#         self.sequence_Field.textChanged.connect(self.textChanging)
         self.version_Text = QtGui.QLabel("Version:")
         self.version_Field = QtGui.QTextEdit()
-        self.version_Field.setText("001")
+        self.version_Field.setText(str(self.fields["version"]))
         self.comment_Text = QtGui.QLabel("Comment:")
         self.comment_Text.setAlignment(QtCore.Qt.AlignTop)
         self.comment_Field = QtGui.QTextEdit()
         self.comment_Field.setText("")
-        # self.version_Field.setValidator(QtGui.QDoubleValidator())
         self.version_Field.setMaximumHeight(25)
-#         self.version_Field.textChanged.connect(self.textChanging)
-#         self.playblast_now.released.connect(self.do_Playblast)
         self.playblast_now.released.connect(self.playblast_and_publish)
         
         self.context = QtGui.QLabel(Dialog)
@@ -108,26 +99,19 @@ class Ui_Dialog(object):
         self.layout_01_02.addWidget(self.sequence_Field)
         self.layout_01_02.addWidget(self.shot_Field)
         self.layout_01_02.addWidget(self.version_Field)
-        
         self.layout_02_01.addWidget(self.comment_Text)
         self.layout_02_02.addWidget(self.comment_Field)
-
         self.layout_03_01.addWidget(self.address_Text)
         self.layout_03_02.addWidget(self.output_Field)
-
         self.layout_04.addWidget(self.playblast_now)
-        
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-#         self.textChanging()
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "The Current Sgtk Environment", None, QtGui.QApplication.UnicodeUTF8))
         self.context.setText(QtGui.QApplication.translate("Dialog", "Your Current Context: ", None, QtGui.QApplication.UnicodeUTF8))
 
-    def main(self):
-        print "main"
+    def main01(self):
         self.publish_template = self._app.engine.get_template_by_name("maya_shot_custom_playblast")
         self.fields = {}
         self.fields["Sequence"] = self.sequence_name
@@ -148,12 +132,12 @@ class Ui_Dialog(object):
             latest_file = max(list_files)
             self.fields["version"] = int(os.path.splitext(latest_file)[0].split('.v')[1]) + 1
             self.path = self.publish_template.apply_fields(self.fields)
-#             print self.path
         else:
             self.fields["version"] = 1
             self.path = self.publish_template.apply_fields(self.fields)
-#             print self.path
+        print self.fields["version"]
 
+#    Check the existing versions
     def listFilesWithParticularExtensions(self, file_path, file_prefix):
         files = [ f for f in os.listdir(file_path) if os.path.isfile(os.path.join(file_path,f)) and f.startswith('%s' % file_prefix) and f.endswith(f.split(os.path.extsep)[-1]) and f.__contains__('.v')]
         if files:
@@ -162,7 +146,7 @@ class Ui_Dialog(object):
             return False
 
     def playblast_and_publish(self):
-        self.main()
+        self.main01()
         #    Playblast in local and move to server
         local_dir = 'C:/Temp'
         if not os.path.exists(local_dir):
