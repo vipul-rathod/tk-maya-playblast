@@ -22,7 +22,6 @@ class Ui_Dialog(object):
         self.sequence_name = self.tk.shotgun.find_one("Shot", [['code', 'is', self.shot_name]], fields=['sg_sequence'])['sg_sequence']['name']
         self.step_name = self.ctx.step["name"]
         self.name = self.shot_name.replace("_", "")
-
         self.main01()
         Dialog.setObjectName("Dialog")
         Dialog.resize(700, 200)
@@ -121,10 +120,9 @@ class Ui_Dialog(object):
         self.fields["name"] = self.name
         self.fields["version"] = 1
         tmp_file_path = self.publish_template.apply_fields(self.fields)
-        
         file_dir = tmp_file_path.split(os.path.basename(tmp_file_path))[0]
         if not os.path.exists(file_dir):
-            os.mkdir(file_dir)
+            os.makedirs(file_dir)
         else:
             pass
         list_files = self.listFilesWithParticularExtensions(file_dir, self.name)
@@ -132,9 +130,11 @@ class Ui_Dialog(object):
             latest_file = max(list_files)
             self.fields["version"] = int(os.path.splitext(latest_file)[0].split('.v')[1]) + 1
             self.path = self.publish_template.apply_fields(self.fields)
+            print 'Version Path: %s' % self.path
         else:
             self.fields["version"] = 1
             self.path = self.publish_template.apply_fields(self.fields)
+            print 'No Version Path: %s' % self.path
 
 #    Check the existing versions
     def listFilesWithParticularExtensions(self, file_path, file_prefix):
