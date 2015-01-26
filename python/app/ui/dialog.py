@@ -9,7 +9,7 @@
 from tank.platform.qt import QtCore, QtGui
 import maya.cmds as cmds
 import tank
-import os, time
+import os, time, subprocess
 from shutil import move
 
 class Ui_Dialog(object):
@@ -57,7 +57,9 @@ class Ui_Dialog(object):
         self.project_Field = QtGui.QTextEdit()
         self.project_Field.setText(self.project_name)
         self.project_Field.setMaximumSize(5000, 25)
-        self.address_Text = QtGui.QLabel("Output:")
+        self.address_Text = QtGui.QPushButton("Output:")
+        self.address_Text.setMaximumWidth(50)
+        self.address_Text.released.connect(self.open_folder)
         self.output_Field = QtGui.QTextEdit()
         self.output_Field.setText(self.path)
         self.output_Field.setEnabled(False)
@@ -134,7 +136,7 @@ class Ui_Dialog(object):
         else:
             self.fields["version"] = 1
             self.path = self.publish_template.apply_fields(self.fields)
-            print 'No Version Path: %s' % self.path
+            print 'Version Path: %s' % self.path
 
 #    Check the existing versions
     def listFilesWithParticularExtensions(self, file_path, file_prefix):
@@ -170,3 +172,6 @@ class Ui_Dialog(object):
         sg_version = self._app.tank.shotgun.create("Version", verData)
         self._app.tank.shotgun.upload("Version", sg_version["id"], self.path, "sg_uploaded_movie")
         cmds.confirmDialog(t='Playblast Published', m='Playblast finished and published to shotgun', b='Ok')
+
+    def open_folder(self):
+        subprocess.check_call(['explorer', self.path.split(os.path.basename(self.path))[0]])
