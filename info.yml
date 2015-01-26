@@ -1,13 +1,6 @@
 # expected fields in the configuration file for this engine
 configuration:
 
-    export_movie_template:
-        type: template
-        required_fields: []
-        optional_fields: "*"
-        description: "Template defining the output location of the work in progress movie file on the the file system."
-
-
 # this app works on Maya engines
 # any host application specific commands
 supported_engines: 
